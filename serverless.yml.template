@@ -5,7 +5,7 @@ provider:
     stage: dev
     profile: default
     memorySize: 128
-    timeout: 6
+    timeout: 10
     environment:
         GITHUB_WEBHOOK_SECRET: SOMEWEBHOOKSECRET
         GITHUB_SECRET: SOMESECRET

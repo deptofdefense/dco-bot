@@ -25,6 +25,37 @@ var optionsTemplate = {
       'Authorization': "token " + process.env.GITHUB_SECRET
     }
 };
+function deleteComments(payload,callback){
+  var options = Object.assign({},optionsTemplate,{
+    path: url.parse(payload.pull_request.comments_url).pathname,
+    method: 'GET'
+  });
+  var req = https.request(options, function(res) {
+    var comments = '';
+    res.on('data', function (chunk) {
+      comments += chunk;
+    });
+    res.on('end',function(){
+      var commentsObj = JSON.parse(comments);
+      commentsObj = commentsObj.filter(function(a){
+          var body = a.body.split('\n');
+          return body[body.length-1] == 'dco-bot';
+      });
+
+      for(var i = 0 ; i < commentsObj.length ; i++ ){
+          var options = Object.assign({},optionsTemplate,{
+            path: url.parse(commentsObj[i].url).pathname,
+            method: 'DELETE'
+          });
+          var req2 = https.request(options);
+          req2.end();
+      }
+      callback();
+    });
+  });
+  req.end();
+}
+
 function postComment(payload, msg, callback) {
   var tmp = {};
   tmp.body = greeting + payload.pull_request.user.login + thanks + msg + signature;
@@ -38,8 +69,6 @@ function postComment(payload, msg, callback) {
     if (res.statusCode != 201) {
       console.log('HEADERS: ' + JSON.stringify(res.headers));
     }
-    // res.setEncoding('utf8');
-    // res.on('data', function (chunk) {console.log('BODY: ' + chunk);});
     res.on('end',function(){
         console.log("Returning callback");
         callback(null,
@@ -163,7 +192,9 @@ module.exports.dcobot = (event, context, callback) => {
     errMsg = '[202] No action required for ' + event.body.action;
     return callback(new Error(errMsg));
   }
-  getCommits(event.body,'',callback);
+  deleteComments(event.body,function(){
+      getCommits(event.body,'',callback);
+  });
   return callback(null, {statusCode:200,body:'Success: ' + JSON.stringify(event.body)});
 };
 
