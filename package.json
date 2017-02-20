@@ -1,0 +1,17 @@
+{
+  "name": "dco-bot",
+  "version": "1.0.0",
+  "description": "GitHub webhook creator using AWS Lambda which checks for DCO sign-off",
+  "main": "handler.js",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "logs": "serverless logs -f dcobot -t"
+  },
+  "author": "Tom Bereknyei",
+  "license": "MIT",
+  "dependencies": {
+    "crypto": "^0.0.3",
+    "https": "^1.0.0",
+    "url": "^0.11.0"
+  }
+}

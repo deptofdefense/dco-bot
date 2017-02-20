@@ -1,0 +1,169 @@
+const https = require('https');
+const crypto = require('crypto');
+const url = require('url');
+
+// Commentary and postComment func adopted from 
+// https://github.com/christo4ferris/dco-check-bot/blob/master/bot.js (Apache 2.0)
+const dco_not_found = '\n\nPlease submit commits with a Signed-off-by statement in order to allow us to process your pull request.';
+const dnf_tail1 =' For example a comment on the last line of your request like this:\n`Signed-off-by: Bob Bobertown <bob.bobtown@example.com>`';
+const dnf_tail2 ='\n\nEnsure you supply a valid e-mail with the comment. These commands may be useful:';
+const dnf_tail3 ='\n```git commit --amend --signoff```\nor\n```git filter-branch -f --commit-filter \'git commit-tree -S "$@"\' HEAD```'
+const dco_found = '\n\nI can confirm that a sign-off has been included. It is okay to process this pull request.';
+const greeting = 'Hi ';
+const thanks = ',\n\nThanks for submitting this pull request!';
+const signature = '\n\ndco-bot';
+
+const regex = /^Signed-off-by: .*<[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,63}>$/im;
+const regexPath = /[^/]*$/;
+
+var goodChain = true;
+var optionsTemplate = {
+    hostname: 'api.github.com',
+    method: 'POST',
+    headers: {
+      'User-Agent': 'dco-bot',
+      'Authorization': "token " + process.env.GITHUB_SECRET
+    }
+};
+function postComment(payload, msg, callback) {
+  var tmp = {};
+  tmp.body = greeting + payload.pull_request.user.login + thanks + msg + signature;
+  var postData = JSON.stringify(tmp);
+  var options = Object.assign({},optionsTemplate,{
+    path: url.parse(payload.pull_request.comments_url).pathname,
+  });
+  console.log('posting to: ' + payload.pull_request.comments_url + ' data: ' + postData);
+  var req = https.request(options, function(res) {
+    console.log('STATUS: ' + res.statusCode);
+    if (res.statusCode != 201) {
+      console.log('HEADERS: ' + JSON.stringify(res.headers));
+    }
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {console.log('BODY: ' + chunk);});
+    res.on('end',function(){
+        console.log("Returning callback");
+        callback(null,
+            {statusCode: 200,
+             body:"Comment complete: " + payload.pull_request.comments_url });
+    });
+  });
+  req.on('error', function(e) {
+    console.log('unable to post comment: ' + e.message);
+    errMsg = '[502] Unable to post comment: ' + e.message;
+    callback(new Error(errMsg));
+  });
+  req.end(postData);
+}
+
+// Used as inspiration (CC)
+// http://www.slideshare.net/jsquyres/fun-with-github-webhooks-verifying-signedoffby
+function getCommits(payload, msg, callback) {
+  var options = Object.assign({},optionsTemplate,{
+    path: url.parse(payload.pull_request.commits_url).pathname,
+    method: 'GET'
+  });
+  console.log('COMMITS: ' + payload.pull_request.commits_url);
+  var req = https.get(options, function (res) {
+    var commitBody = '';
+    console.log('STATUS: ' + res.statusCode);
+    if (res.statusCode != 201) {
+      console.log('HEADERS: ' + JSON.stringify(res.headers));
+    }
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+      commitBody += chunk;
+    });
+    res.on('end', function(){
+      var commits = JSON.parse(commitBody);
+      var body = {
+          "target_url": "https://github.com/deptofdefense/code.mil",
+          "description": "All commits up to this point been signed off.",
+          "context": "DCO"
+      };
+      var badSha;
+      const path = url.parse(payload.pull_request.statuses_url).pathname.replace(regexPath,'');
+      for(var i = 0 ; i < commits.length ; i++){
+        var sha = commits[i].sha;
+        var options  = Object.assign({},optionsTemplate,{path:path + sha});
+        var bodyLines = commits[i].commit.message.split('\n');
+        var sigLine = bodyLines[bodyLines.length-1]; // Perhaps it can occur anywhere?
+        var req2 = https.request(options,function(res2){
+            req2.on('error',function(e){console.log("error: ",e)});
+        });
+        if (regex.test(sigLine) && (goodChain || i != commits.length -1) ){
+            console.log("Setting ",sha," to success.");
+            body.state = "success";
+        } else {
+            goodChain = false;
+            badSha = badSha || sha;
+            console.log("Setting ",sha," to error.");
+            body.state = "error";
+            body.description = "A commit (" + badSha + ") is not signed off."
+        }
+        req2.end(JSON.stringify(body));
+      }
+      if (goodChain){
+        postComment(
+          payload,
+          dco_found, callback);
+      } else {
+        postComment(
+          payload,
+          dco_not_found+dnf_tail1+dnf_tail2+dnf_tail3, callback);
+      }
+    });
+  });
+  req.on('error', function(e) {
+    console.log('[502]: Unable to retrieve commits: ' + e.message);
+  });
+}
+
+function signRequestBody(key, body) {
+  return `sha1=${crypto.createHmac("sha1", key).update(JSON.stringify(body)).digest("hex")}`;
+}
+
+module.exports.dcobot = (event, context, callback) => {
+// Mangled and adopted (unknown license) from 
+// https://raw.githubusercontent.com/serverless/examples/master/aws-node-github-webhook-listener/handler.js
+  var errMsg;
+  const token = process.env.GITHUB_WEBHOOK_SECRET;
+  const headers = event.headers;
+  const sig = headers['X-Hub-Signature'];
+  const githubEvent = headers['X-GitHub-Event'];
+  const id = headers['X-GitHub-Delivery'];
+  console.log(typeof event.body);
+  const calculatedSig = signRequestBody(token, event.body );
+  if (typeof token !== 'string') {
+    errMsg = '[401] must provide a \'GITHUB_WEBHOOK_SECRET\' env variable';
+    return callback(new Error(errMsg));
+  }
+  if (!sig) {
+    errMsg = '[401] No X-Hub-Signature found on request';
+    return callback(new Error(errMsg));
+  }
+  if (!githubEvent) {
+    errMsg = '[422] No X-Github-Event found on request';
+    return callback(new Error(errMsg));
+  }
+  if (!id) {
+    errMsg = '[401] No X-Github-Delivery found on request';
+    return callback(new Error(errMsg));
+  }
+  if (sig !== calculatedSig) {  // not equal time compare?
+    errMsg = '[401] X-Hub-Signature incorrect. Github webhook token doesn\'t match';
+    return callback(new Error(errMsg));
+  }
+  // event.body = JSON.parse(event.body); Not needed with serverless libraries.
+  console.log(event.body.pull_request.commits_url);
+  console.log('---------------------------------');
+  console.log(`Github-Event: "${githubEvent}" with action: "${event.body.action}"`);
+  console.log('---------------------------------');
+
+  if (event.body.action != 'opened' && event.body.action != 'reopened' && event.body.action != 'synchronize'){
+    errMsg = '[202] No action required for ' + event.body.action;
+    return callback(new Error(errMsg));
+  }
+  getCommits(event.body,'',callback);
+  return callback(null, {statusCode:200,body:'Success: ' + JSON.stringify(event.body)});
+};
+

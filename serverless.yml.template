@@ -1,0 +1,21 @@
+service: dco-bot
+provider:
+    name: aws
+    runtime: nodejs4.3
+    stage: dev
+    profile: default
+    memorySize: 128
+    timeout: 6
+    environment:
+        GITHUB_WEBHOOK_SECRET: SOMEWEBHOOKSECRET
+        GITHUB_SECRET: SOMESECRET
+
+functions:
+  dcobot:
+    handler: handler.dcobot
+    events:
+      - http:
+          path: dco-bot
+          method: post
+          integration: lambda
+          cors: true
