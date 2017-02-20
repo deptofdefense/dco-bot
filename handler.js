@@ -38,8 +38,8 @@ function postComment(payload, msg, callback) {
     if (res.statusCode != 201) {
       console.log('HEADERS: ' + JSON.stringify(res.headers));
     }
-    res.setEncoding('utf8');
-    res.on('data', function (chunk) {console.log('BODY: ' + chunk);});
+    // res.setEncoding('utf8');
+    // res.on('data', function (chunk) {console.log('BODY: ' + chunk);});
     res.on('end',function(){
         console.log("Returning callback");
         callback(null,
@@ -66,7 +66,7 @@ function getCommits(payload, msg, callback) {
   var req = https.get(options, function (res) {
     var commitBody = '';
     console.log('STATUS: ' + res.statusCode);
-    if (res.statusCode != 201) {
+    if (res.statusCode != 200) {
       console.log('HEADERS: ' + JSON.stringify(res.headers));
     }
     res.setEncoding('utf8');
@@ -90,7 +90,7 @@ function getCommits(payload, msg, callback) {
         var req2 = https.request(options,function(res2){
             req2.on('error',function(e){console.log("error: ",e)});
         });
-        if (regex.test(sigLine) && (goodChain || i != commits.length -1) ){
+        if (regex.test(sigLine) && (goodChain || (i != (commits.length - 1)))){
             console.log("Setting ",sha," to success.");
             body.state = "success";
         } else {
