@@ -90,7 +90,7 @@ function getCommits(payload, msg, callback) {
         var req2 = https.request(options,function(res2){
             req2.on('error',function(e){console.log("error: ",e)});
         });
-        if (regex.test(sigLine) && (goodChain || i != commits.length -1) ){
+        if (regex.test(sigLine) && (goodChain || (i != (commits.length - 1)))){
             console.log("Setting ",sha," to success.");
             body.state = "success";
         } else {
