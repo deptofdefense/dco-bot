@@ -160,7 +160,6 @@ module.exports.dcobot = (event, context, callback) => {
   const sig = headers['X-Hub-Signature'];
   const githubEvent = headers['X-GitHub-Event'];
   const id = headers['X-GitHub-Delivery'];
-  console.log(typeof event.body);
   const calculatedSig = signRequestBody(token, event.body );
   if (typeof token !== 'string') {
     errMsg = '[401] must provide a \'GITHUB_WEBHOOK_SECRET\' env variable';
@@ -183,10 +182,7 @@ module.exports.dcobot = (event, context, callback) => {
     return callback(new Error(errMsg));
   }
   // event.body = JSON.parse(event.body); Not needed with serverless libraries.
-  console.log(event.body.pull_request.commits_url);
-  console.log('---------------------------------');
   console.log(`Github-Event: "${githubEvent}" with action: "${event.body.action}"`);
-  console.log('---------------------------------');
 
   if (event.body.action != 'opened' && event.body.action != 'reopened' && event.body.action != 'synchronize'){
     errMsg = '[202] No action required for ' + event.body.action;
