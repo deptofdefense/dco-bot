@@ -1,16 +1,25 @@
-**CONTRIBUTING.md is for software projects. You do not need to follow the DCO process for commenting on the Code.mil repository documentation, like CONTRIBUTING.md or AGREEMENT.md.**
+# Contributing to Our Projects, Version 1.0 
+**Note: This draft CONTRIBUTING.md is for software projects. You do not need to follow the DCO process for commenting on the Code.mil repository documentation, like CONTRIBUTING.md, README.md, etc.**
 
-Department of Defense (DoD) software projects released under the Defense Open Source Agreement (DOSA) use the Developer’s Certificate of Origin (DCO) to manage the contribution process. The DCO is a legally binding statement that asserts that you are the creator of your contribution and that you are intentionally making your contribution available under the license associated with the project.
+Thanks for thinking about using or contributing to this software and its documentation (“Work”)!
 
-Signing the DCO is done using a Signed-off-by process in Git. The Signed-off-by is a simple line at the end of the commit message.
+## 1. License
+The portions of this Work written by United States (U.S.) Federal government employees within the scope of their employment are not eligible for copyright protection in the U.S. This is generally understood to mean that these portions of the Work are placed in the public domain.
 
-You should only submit a contribution if you are willing to agree to the DCO terms. If you are willing, just add a line to every git commit message:
+In countries where copyright protection is available, the portions of this Work written by U.S. Federal government employees within the scope of their employment are being made available under the license associated with this Work’s repository (“License”).
+
+## 2. Your Contributions: Developer’s Certificate of Origin
+The project maintainer for this Work will only accept contributions using the Developer’s Certificate of Origin 1.1 located at https://developercertificate.org (“DCO”). The DCO is a legally binding statement asserting that you are the creator of your contribution, or that you otherwise have the authority to distribute the contribution, and that you are intentionally making the contribution available under the license associated with the project.
+
+You can agree to the DCO in your contribution by using a “Signed-off-by” line at the end of your commit message. You should only submit a contribution if you are willing to agree to the DCO terms. If you are willing, just add a line to the end of every git commit message:
 
 ```Signed-off-by: Jane Smith <jane.smith@email.com>```
 
-You may type this line on your own when writing your commit messages. However, Git makes it easy to add this line to your commit messages. Make sure the user.name and user.email are set in your git configs. Use -s or – – signoff to add the Signed-off-by line to the end of the commit message. If you set your user.name and user.email as part of your git configuration, you can sign your commit automatically with git commit -s.
+You may type this line on your own when writing your commit messages. However, Git makes it easy to add this line to your commit messages. If you set your `user.name` and `user.email` as part of your git configuration, you can sign your commit automatically with `git commit -s`.
 
-You have to use your real name--pseudonyms or anonymous contributions will not be accepted.
+You have to use your real name - pseudonyms or anonymous contributions will not be accepted.
+
+If you are a U.S. Federal government employee and use a *.mil or *.gov email address, we interpret your Signed-off-by to mean that the contribution was created in whole or in part by you and that your contribution is not subject to copyright protections.
 
 The text of the DCO is (from https://developercertificate.org):
 ```
