@@ -5,18 +5,25 @@ const url = require('url');
 // Commentary and postComment func adopted from 
 // https://github.com/christo4ferris/dco-check-bot/blob/master/bot.js (Apache 2.0)
 const dco_not_found = '\n\nPlease submit commits with a Signed-off-by statement in order to allow us to process your pull request.';
-const dnf_tail1 =' For example a comment on the last line of your request like this:\n`Signed-off-by: Bob Bobertown <bob.bobtown@example.com>`';
-const dnf_tail2 ='\n\nEnsure you supply a valid e-mail with the comment. These commands may be useful:';
-const dnf_tail3 ='\n```git commit --amend --signoff```\nor\n```git filter-branch -f --commit-filter \'git commit-tree -S "$@"\' HEAD```'
+const dnf_tail =` For example a comment on the last line of your request like this:
+\`Signed-off-by: Bob Bobertown <bob.bobtown@example.com>\`
+Ensure you supply a valid e-mail with the comment. These commands may be useful:
+\`\`\`
+git commit --amend --signoff
+\`\`\`
+or
+\`\`\`
+git filter-branch -f --commit-filter 'git commit-tree -S "$@"' HEAD
+\`\`\`
+`;
 const dco_found = '\n\nI can confirm that a sign-off has been included. It is okay to process this pull request.';
 const greeting = 'Hi ';
 const thanks = ',\n\nThanks for submitting this pull request!';
 const signature = '\n\ndco-bot';
 
-const regex = /^Signed-off-by: .*<[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,63}>$/im;
+const regex = /Signed-off-by: .*<[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,63}>$/im;
 const regexPath = /[^/]*$/;
 
-var goodChain = true;
 var optionsTemplate = {
     hostname: 'api.github.com',
     method: 'POST',
@@ -87,6 +94,7 @@ function postComment(payload, msg, callback) {
 // Used as inspiration (CC)
 // http://www.slideshare.net/jsquyres/fun-with-github-webhooks-verifying-signedoffby
 function getCommits(payload, msg, callback) {
+  var goodChain = true;
   var options = Object.assign({},optionsTemplate,{
     path: url.parse(payload.pull_request.commits_url).pathname,
     method: 'GET'
@@ -111,26 +119,26 @@ function getCommits(payload, msg, callback) {
       };
       var badSha;
       const path = url.parse(payload.pull_request.statuses_url).pathname.replace(regexPath,'');
-      for(var i = 0 ; i < commits.length ; i++){
-        var sha = commits[i].sha;
-        var options  = Object.assign({},optionsTemplate,{path:path + sha});
-        var bodyLines = commits[i].commit.message.split('\n');
+      for (var commit of commits) {
+        var options  = Object.assign({},optionsTemplate,{path:path + commit.sha});
+        var bodyLines = commit.commit.message.split('\n');
         var sigLine = bodyLines[bodyLines.length-1]; // Perhaps it can occur anywhere?
         var req2 = https.request(options,function(res2){
             req2.on('error',function(e){console.log("error: ",e)});
         });
-        if (regex.test(sigLine) && (goodChain || (i != (commits.length - 1)))){
-            console.log("Setting ",sha," to success.");
+        if (regex.test(sigLine) && (goodChain || (commit != commits[commits.length - 1]))){
+            console.log("Setting ",commit.sha," to success.");
             body.state = "success";
         } else {
             goodChain = false;
-            badSha = badSha || sha;
-            console.log("Setting ",sha," to error.");
+            badSha = badSha || commit.sha;
+            console.log("Setting ",commit.sha," to error.");
             body.state = "error";
-            body.description = "A commit (" + badSha + ") is not signed off."
+            body.description = "A commit (${badSha}) is not signed off."
         }
         req2.end(JSON.stringify(body));
       }
+
       if (goodChain){
         postComment(
           payload,
@@ -138,7 +146,7 @@ function getCommits(payload, msg, callback) {
       } else {
         postComment(
           payload,
-          dco_not_found+dnf_tail1+dnf_tail2+dnf_tail3, callback);
+          dco_not_found+dnf_tail, callback);
       }
     });
   });
