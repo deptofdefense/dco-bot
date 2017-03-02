@@ -8,10 +8,15 @@
     "logs": "serverless logs -f dcobot -t"
   },
   "author": "Tom Bereknyei",
-  "license": "MIT",
+  "license": "BSD-2",
   "dependencies": {
     "crypto": "^0.0.3",
     "https": "^1.0.0",
     "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.16.1",
+    "eslint-config-airbnb-base": "^11.1.0",
+    "eslint-plugin-import": "^2.2.0"
   }
 }
