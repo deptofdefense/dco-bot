@@ -1,6 +1,6 @@
 BSD 2-Clause License
 
-Copyright (c) 2017, U.S. Dept of Defense
+Copyright (c) 2017, Contributors
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
