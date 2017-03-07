@@ -4,12 +4,13 @@ const https = require('https');
 const crypto = require('crypto');
 const url = require('url');
 
-// Commentary and postComment func adopted from
+// Commentary and postComment func modified from code by
+// © 2015 Chrispher Ferris and © 2017 Marc-Arthur Pierre-Louis
 // https://github.com/christo4ferris/dco-check-bot/blob/master/bot.js (Apache 2.0)
 const dco_not_found = '\n\nPlease submit commits with a Signed-off-by statement in order to allow us to process your pull request.';
 const dnf_tail =` For example a comment on the last line of your request like this:
 \`Signed-off-by: Bob Boberton <bob.boberton@example.com>\`
-Ensure you supply a valid e-mail with the comment. These commands may be useful:
+Please use your real name and valid e-mail with the comment. These commands may be useful:
 \`\`\`
 git commit --amend --signoff
 \`\`\`
@@ -93,7 +94,8 @@ function postComment(payload, msg, callback) {
   req.end(postData);
 }
 
-// Used as inspiration (CC)
+// Used as inspiration (CC BY 4.0)
+// © 2015 Jeff Squyres <jeff@squyres.com>
 // http://www.slideshare.net/jsquyres/fun-with-github-webhooks-verifying-signedoffby
 function getCommits(payload, msg, callback) {
   let goodChain = true;
@@ -162,7 +164,7 @@ function signRequestBody(key, body) {
 }
 
 module.exports.dcobot = (event, context, callback) => {
-// Mangled and adopted (unknown license) from
+// Mangled and modified (unknown license) from
 // https://raw.githubusercontent.com/serverless/examples/master/aws-node-github-webhook-listener/handler.js
   let errMsg;
   const token = process.env.GITHUB_WEBHOOK_SECRET;
