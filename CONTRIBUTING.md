@@ -1,4 +1,5 @@
-# Contributing to This Project
+# Contributing to this Project
+
 Thanks for thinking about using or contributing to this software and its documentation (“Project”)!
 
 The project maintainer for this Project will only accept contributions using the Developer’s Certificate of Origin 1.1 located at https://developercertificate.org (“DCO”). The DCO is a legally binding statement asserting that you are the creator of your contribution, or that you otherwise have the authority to distribute the contribution, and that you are intentionally making the contribution available under the license associated with the Project ("License").
@@ -9,9 +10,9 @@ You can agree to the DCO in your contribution by using a “Signed-off-by” lin
 
 You may type this line on your own when writing your commit messages. However, Git makes it easy to add this line to your commit messages. If you set your `user.name` and `user.email` as part of your git configuration, you can sign your commit automatically with `git commit -s`.
 
-U.S. Federal law prevents the government from accepting gratuitous services unless certain conditions are met. By sumbitting a pull request, you acknowledge that your services are offered without expectation of payment and that you expressly waive any future pay claims against the U.S. Federal government related to your contribution.
+You do not have to use your real name. Pseudonymous or anonymous contributions may be accepted, but you must be reachable at the email provided in the Signed-of-by line.
 
-You have to use your real name - pseudonyms or anonymous contributions will not be accepted.
+U.S. Federal law prevents the government from accepting gratuitous services unless certain conditions are met. By sumbitting a pull request, you acknowledge that your services are offered without expectation of payment and that you expressly waive any future pay claims against the U.S. Federal government related to your contribution.
 
 If you are a U.S. Federal government employee and use a *.mil or *.gov email address, we interpret your Signed-off-by to mean that the contribution was created in whole or in part by you and that your contribution is not subject to copyright protections.
 

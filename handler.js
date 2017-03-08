@@ -5,12 +5,12 @@ const crypto = require('crypto');
 const url = require('url');
 
 // Commentary and postComment func modified from code by
-// © 2015 Chrispher Ferris and © 2017 Marc-Arthur Pierre-Louis
+// © 2015 Christopher Ferris and © 2017 Marc-Arthur Pierre-Louis
 // https://github.com/christo4ferris/dco-check-bot/blob/master/bot.js (Apache 2.0)
 const dco_not_found = '\n\nPlease submit commits with a Signed-off-by statement in order to allow us to process your pull request.';
 const dnf_tail =` For example a comment on the last line of your request like this:
 \`Signed-off-by: Bob Boberton <bob.boberton@example.com>\`
-Please use your real name and valid e-mail with the comment. These commands may be useful:
+Please use a valid e-mail with the comment. These commands may be useful:
 \`\`\`
 git commit --amend --signoff
 \`\`\`
