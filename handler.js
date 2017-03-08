@@ -5,8 +5,23 @@ const crypto = require('crypto');
 const url = require('url');
 
 // Commentary and postComment func modified from code by
-// © 2015 Christopher Ferris and © 2017 Marc-Arthur Pierre-Louis
 // https://github.com/christo4ferris/dco-check-bot/blob/master/bot.js (Apache 2.0)
+// Contacted Christopher Ferris
+/*
+Copyright 2015 Christopher Ferris
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 const dco_not_found = '\n\nPlease submit commits with a Signed-off-by statement in order to allow us to process your pull request.';
 const dnf_tail =` For example a comment on the last line of your request like this:
 \`Signed-off-by: Bob Boberton <bob.boberton@example.com>\`
