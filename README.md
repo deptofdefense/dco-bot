@@ -4,6 +4,11 @@ GitHub webhook for a AWS Lambda Bot to check commits for DCO sign-off
 # Usage
 If you are a member of deptofdefense, add `https://1iexi2zo5a.execute-api.us-east-1.amazonaws.com/dev/dco-bot` as a webhook on your repo with `Pull Request` triggers. Anyone else will have to proceed with installation on your own AWS account as outlined below.
 
+The bot will check for a sign-off in the form:
+```
+Signed-off-by: Bob Boberton <bob.boberton@example.com>
+```
+
 # Installation
 ```
 npm install serverless -g
