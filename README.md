@@ -41,14 +41,15 @@ functions:
 ```
 
 # Configure GitHub webhook
-(following instructions adopted from: https://raw.githubusercontent.com/serverless/examples/master/aws-node-github-webhook-listener/README.md, unknown license)
+_These instructions are inspired by [Serverless Github webhook listener](https://github.com/serverless/examples/tree/master/aws-node-github-webhook-listener) ([MIT](https://github.com/serverless/serverless/blob/master/LICENSE.txt) license)._
+
 Paste the endpoint as the webhook in GitHub as follows:
 
 Configure your webhook in your github repository settings. [Setting up a Webhook](https://developer.github.com/webhooks/creating/#setting-up-a-webhook)
 
 1. Plugin your API POST endpoint. (`https://abcdefg.execute-api.us-east-1.amazonaws.com/dev/webhook` in this example). Run `sls info` to grab your endpoint if you don't have it handy.
-2. Plugin your secret from `GITHUB_WEBHOOK_SECRET` environment variable.
-3. Choose the types of events you want the github webhook to fire on. For the DCO-bot we recommend, `Pull Request` events.
+1. Plugin your secret from `GITHUB_WEBHOOK_SECRET` environment variable.
+1. Choose the types of events you want the github webhook to fire on. For the DCO-bot we recommend, `Pull Request` events.
 
   ![webhook-steps](https://cloud.githubusercontent.com/assets/532272/21461773/db7cecd2-c922-11e6-9362-6bbf4661fe14.jpg)
 
