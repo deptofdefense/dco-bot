@@ -8,7 +8,7 @@
     "logs": "serverless logs -f dcobot -t"
   },
   "author": "Tom Bereknyei",
-  "license": "BSD-2",
+  "license": "ISC",
   "dependencies": {
     "crypto": "^0.0.3",
     "https": "^1.0.0",
