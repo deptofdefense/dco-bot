@@ -1,6 +1,8 @@
 ISC License
 
-Copyright 2017 Contributors
+Copyright 2017 U.S. Federal Government (in countries where recognized)
+
+Copyright \<YEAR> \<Contributor Name>
 
 Permission to use, copy, modify, and/or distribute this software for any purpose
 with or without fee is hereby granted, provided that the above copyright notice
