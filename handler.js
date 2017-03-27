@@ -5,7 +5,8 @@ LICENSE.md for licensing, copyright, and attribution information.
 
 ISC License
 
-Copyright 2017 <Contributor Names>
+Copyright 2017 U.S. Federal Government (in countries where recognized)
+Copyright 2017 <Contributor Name>
 
 Permission to use, copy, modify, and/or distribute this software for any purpose
 with or without fee is hereby granted, provided that the above copyright notice
